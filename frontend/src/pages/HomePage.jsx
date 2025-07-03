@@ -1,6 +1,6 @@
-import React from "react";
+// HomePage.jsx
+import React, { useEffect } from "react";
 import { Container, SimpleGrid, Text, VStack } from "@chakra-ui/react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../store/product";
 import ProductCard from "../components/productcard";
@@ -11,7 +11,10 @@ const HomePage = () => {
 	useEffect(() => {
 		fetchProducts();
 	}, [fetchProducts]);
-	console.log("products", products);
+
+	useEffect(() => {
+		console.log("Fetched products:", products);
+	}, [products]);
 
 	return (
 		<Container maxW='container.xl' py={12}>
@@ -35,9 +38,12 @@ const HomePage = () => {
 					spacing={10}
 					w={"full"}
 				>
-					{products.map((product) => (
-						<ProductCard key={product._id} product={product} />
-					))}
+					{Array.isArray(products) &&
+						products
+							.filter((product) => product && product._id)
+							.map((product) => (
+								<ProductCard key={product._id} product={product} />
+							))}
 				</SimpleGrid>
 
 				{products.length === 0 && (
@@ -54,4 +60,5 @@ const HomePage = () => {
 		</Container>
 	);
 };
+
 export default HomePage;

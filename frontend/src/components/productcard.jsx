@@ -1,3 +1,4 @@
+// productcard.jsx
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
 	Box,
@@ -24,6 +25,8 @@ import { useProductStore } from "../store/product";
 import { useState } from "react";
 
 const ProductCard = ({ product }) => {
+	if (!product || !product._id) return null;
+
 	const [updatedProduct, setUpdatedProduct] = useState(product);
 
 	const textColor = useColorModeValue("gray.600", "gray.200");
@@ -35,45 +38,25 @@ const ProductCard = ({ product }) => {
 
 	const handleDeleteProduct = async (pid) => {
 		const { success, message } = await deleteProduct(pid);
-		if (!success) {
-			toast({
-				title: "Error",
-				description: message,
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-		} else {
-			toast({
-				title: "Success",
-				description: message,
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-			});
-		}
+		toast({
+			title: success ? "Success" : "Error",
+			description: message,
+			status: success ? "success" : "error",
+			duration: 3000,
+			isClosable: true,
+		});
 	};
 
 	const handleUpdateProduct = async (pid, updatedProduct) => {
 		const { success, message } = await updateProduct(pid, updatedProduct);
 		onClose();
-		if (!success) {
-			toast({
-				title: "Error",
-				description: message,
-				status: "error",
-				duration: 3000,
-				isClosable: true,
-			});
-		} else {
-			toast({
-				title: "Success",
-				description: "Product updated successfully",
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-			});
-		}
+		toast({
+			title: success ? "Success" : "Error",
+			description: success ? "Product updated successfully" : message,
+			status: success ? "success" : "error",
+			duration: 3000,
+			isClosable: true,
+		});
 	};
 
 	return (
@@ -86,6 +69,7 @@ const ProductCard = ({ product }) => {
 			bg={bg}
 		>
 			<Image src={product.image} alt={product.name} h={48} w='full' objectFit='cover' />
+		
 
 			<Box p={4}>
 				<Heading as='h3' size='md' mb={2}>
@@ -108,7 +92,6 @@ const ProductCard = ({ product }) => {
 
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
-
 				<ModalContent>
 					<ModalHeader>Update Product</ModalHeader>
 					<ModalCloseButton />
@@ -153,4 +136,5 @@ const ProductCard = ({ product }) => {
 		</Box>
 	);
 };
+
 export default ProductCard;
